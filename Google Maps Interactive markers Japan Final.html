@@ -1,0 +1,521 @@
+<html>
+  <head>
+    <title>Advanced Markers with HTML</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://use.fontawesome.com/releases/v6.2.0/js/all.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <script type="module" src="./index.js"></script>
+
+    <style>
+        :root {
+        --ines-2: #99CC00;
+        --ines-3: #FFCC00;
+        --ines-4: #FF9900;
+        --ines-5: #FF6600;
+        --ines-6: #FF0000;
+        --ines-7: #FF00FF;
+
+        }
+
+        /*
+        * Optional: Makes the sample page fill the window.
+        */
+        html,
+        body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        }
+
+        /*
+        * Always set the map height explicitly to define the size of the div element
+        * that contains the map.
+        */
+        #map {
+        height: 100%;
+        width: 100%;
+        }
+
+        /*
+        * Property styles in unhighlighted state.
+        */
+        .property {
+        align-items: center;
+        background-color: #FFFFFF;
+        border-radius: 50%;
+        color: #263238;
+        display: flex;
+        font-size: 14px;
+        gap: 15px;
+        height: 30px;
+        justify-content: center;
+        padding: 4px;
+        position: relative;
+        position: relative;
+        transition: all 0.3s ease-out;
+        width: 30px;
+        border-color: #000000;
+        border-width: 5px;
+        }
+
+        .property::after {
+        border-left: 9px solid transparent;
+        border-right: 9px solid transparent;
+        border-top: 9px solid #FFFFFF;
+        content: "";
+        height: 0;
+        left: 50%;
+        position: absolute;
+        top: 95%;
+        transform: translate(-50%, 0);
+        transition: all 0.3s ease-out;
+        width: 0;
+        z-index: 1;
+        }
+
+        .property .icon {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        color: #000000;
+        }
+
+        .property .icon svg {
+        height: 20px;
+        width: auto;
+        }
+
+        .property .details {
+        display: none;
+        flex-direction: column;
+        flex: 1;
+        }
+
+        .property .address {
+        color: #9E9E9E;
+        font-size: 10px;
+        margin-bottom: 5px;
+        margin-top: 5px;
+        }
+
+        .property .features {
+        align-items: flex-end;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        }
+
+        .property .features > div {
+        align-items: center;
+        background: #F5F5F5;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        display: flex;
+        font-size: 10px;
+        gap: 5px;
+        padding: 5px;
+        }
+
+        /*
+        * Property styles in highlighted state.
+        */
+        .property.highlight {
+        background-color: #FFFFFF;
+        border-radius: 8px;
+        box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.2);
+        height: 80px;
+        padding: 8px 15px;
+        width: auto;
+        }
+
+        .property.highlight::after {
+        border-top: 9px solid #FFFFFF;
+        }
+
+        .property.highlight .details {
+        display: flex;
+        }
+
+        .property.highlight .icon svg {
+        width: 50px;
+        height: 50px;
+        }
+
+        /*
+        * Scale 2 colors.
+        */
+        .property.highlight:has(.ines-2) .icon {
+        color: var(--ines-2);
+        }
+
+        .property:not(.highlight):has(.ines-2) {
+        background-color: var(--ines-2);
+        }
+
+        .property:not(.highlight):has(.ines-2)::after {
+        border-top: 9px solid var(--ines-2);
+        }
+
+        /*
+        * Scale 3 colors.
+        */
+        .property.highlight:has(.ines-3) .icon {
+        color: var(--ines-3);
+        }
+
+        .property:not(.highlight):has(.ines-3) {
+        background-color: var(--ines-3);
+        }
+
+        .property:not(.highlight):has(.ines-3)::after {
+        border-top: 9px solid var(--ines-3);
+        }
+
+        /*
+        * Scale 4 colors.
+        */
+        .property.highlight:has(.ines-4) .icon {
+        color: var(--ines-4);
+        }
+
+        .property:not(.highlight):has(.ines-4) {
+        background-color: var(--ines-4);
+        }
+
+        .property:not(.highlight):has(.ines-4)::after {
+        border-top: 9px solid var(--ines-4);
+        }
+
+
+        /*
+        * Scale 5 colors.
+        */
+        .property.highlight:has(.ines-5) .icon {
+        color: var(--ines-5);
+        }
+
+        .property:not(.highlight):has(.ines-5) {
+        background-color: var(--ines-5);
+        }
+
+        .property:not(.highlight):has(.ines-5)::after {
+        border-top: 9px solid var(--ines-5);
+        }
+
+        /*
+        * Scale 6 colors.
+        */
+        .property.highlight:has(.ines-6) .icon {
+        color: var(--ines-6);
+        }
+
+        .property:not(.highlight):has(.ines-6) {
+        background-color: var(--ines-6);
+        }
+
+        .property:not(.highlight):has(.ines-6)::after {
+        border-top: 9px solid var(--ines-6);
+        }
+
+        /*
+        * Scale 7 colors.
+        */
+        .property.highlight:has(.ines-7) .icon {
+        color: var(--ines-7);
+        }
+
+        .property:not(.highlight):has(.ines-7) {
+        background-color: var(--ines-7);
+        }
+
+        .property:not(.highlight):has(.ines-7)::after {
+        border-top: 9px solid var(--ines-7);
+        }
+
+        .my-legend .legend-title {
+            text-align: left;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 90%;
+            }
+            
+        .my-legend .legend-scale ul {
+            margin: 0;
+            padding: 0;
+            float: left;
+            list-style: none;
+            }
+
+        .my-legend .legend-scale ul li {
+            display: block;
+            float: left;
+            width: 50px;
+            margin-bottom: 1px;
+            text-align: center;
+            font-size: 80%;
+            list-style: none;
+            }
+
+        .my-legend ul.legend-labels li span {
+            display: block;
+            float: left;
+            height: 15px;
+            width: 50px;
+            }
+
+        .my-legend .legend-source {
+            font-size: 70%;
+            color: #000000;
+            clear: both;
+            }
+
+        .my-legend a {
+            color: #121212;
+            }
+
+        .my-legend {
+            position: fixed;
+            bottom: 30px;
+            left: 5px;
+            width: 365px; 
+            background-color: #FFFFFF75;
+            border-radius: 5px;
+        }
+
+
+
+        .legend .legend-title {
+            text-align: left;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 90%;
+            text-align: center;
+            }
+            
+        .legend .list ul {
+            margin: 0;
+            padding: 0;
+            float: left;
+            list-style: none;
+            }
+
+        .legend .list ul li {
+            display: block;
+            float: left;
+            width: 50px;
+            margin-bottom: 1px;
+            text-align: center;
+            font-size: 80%;
+            list-style: none;
+            text-align: center;
+            }
+
+        .legend ul.icons li i {
+            display: block;
+            float: left;
+            height: 15px;
+            width: 50px;
+            text-align: center;
+            }
+
+        .legend {
+            position: fixed;
+            bottom: 120px;
+            left: 5px;
+            width: 60px; 
+            background-color: #FFFFFF75;
+            border-radius: 5px;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <!-- 
+     The `defer` attribute causes the callback to execute after the full HTML
+     document has been parsed. For non-blocking uses, avoiding race conditions,
+     and consistent behavior across browsers, consider loading using Promises
+     with https://www.npmjs.com/package/@googlemaps/js-api-loader.
+    -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAQ0grd3jkLktRxzz3Cq9SlQbvwtCi36Ts&callback=initMap&libraries=marker&v=beta&language=en&region=EN"
+      defer
+    ></script>
+
+    <script>
+        function initMap() {
+        const center = {
+            lat: 35.41,
+            lng: 139.41,
+        };
+        const JAPAN_BOUNDS = {
+            north: 50.00,
+            south: 23.00,
+            west: 120.00,
+            east: 150.00,
+          };
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 7,
+            center,
+            mapId: "4504f8b37365c3d0",
+            restriction: {
+                latLngBounds: JAPAN_BOUNDS,
+                strictBounds: true,
+              },
+        });
+
+
+
+        for (const property of properties) {
+            const advancedMarkerView = new google.maps.marker.AdvancedMarkerView({
+            map,
+            content: buildContent(property),
+            position: property.position,
+            title: property.description,
+            });
+            const element = advancedMarkerView.element;
+
+            ["focus", "pointerenter"].forEach((event) => {
+            element.addEventListener(event, () => {
+                highlight(advancedMarkerView, property);
+            });
+            });
+            ["blur", "pointerleave"].forEach((event) => {
+            element.addEventListener(event, () => {
+                unhighlight(advancedMarkerView, property);
+            });
+            });
+            advancedMarkerView.addListener("click", (event) => {
+            unhighlight(advancedMarkerView, property);
+            });
+        }
+        }
+
+        function highlight(markerView, property) {
+        markerView.content.classList.add("highlight");
+        markerView.element.style.zIndex = 1;
+        }
+
+        function unhighlight(markerView, property) {
+        markerView.content.classList.remove("highlight");
+        markerView.element.style.zIndex = "";
+        }
+
+        function buildContent(property) {
+        const content = document.createElement("div");
+
+        content.classList.add("property");
+        content.innerHTML = `
+        <div class="icon">
+            <i aria-hidden="true" class="fa fa-icon fa-${property.type} ines-${property.scale}" title="${property.type}"></i>
+            <span class="fa-sr-only">${property.type}</span>
+        </div>
+            <div class="details">
+                <div class="price">${property.location}</div>
+                <div class="address">${property.description}</div>
+                <div class="INES">INES: ${property.scale}
+                </div>
+                <div class="year">Year: ${property.year}</div>
+                
+            </div>
+            `;
+        return content;
+        }
+
+        const properties = [
+        {
+            location: "Fukushima",
+            description: "Reactor shutdown after the 2011 Sendai earthquake and tsunami; failure of emergency cooling caused an explosion",
+            type: "explosion",
+            scale: 5,
+            year: 2011,
+            position: {
+            lat: 37.319444,
+            lng: 141.021111,
+            },
+        },
+        {
+            location: "Onagawa",
+            description: "Reactor shutdown after the 2011 Sendai earthquake and tsunami caused a fire",
+            type: "explosion",
+            scale: 5,
+            year: 2011,
+            position: {
+            lat: 38.401111,
+            lng: 141.499722,
+},
+        },
+        {
+            location: "Tokaimura",
+            description: "Fatal overexposures of workers following a criticality event at a nuclear facility",
+            type: "triangle-exclamation",
+            scale: 4,
+            year: 1999,
+            position: {
+            lat: 36.4667,
+            lng: 140.5667,
+},
+        },
+        {
+            location: "Ishikawa",
+            description: "Accident due to improper handling of control rod",
+            type: "triangle-exclamation",
+            scale: 2,
+            year: 1999,
+            position: {
+            lat: 37.061111,
+            lng: 136.726389,
+            },
+        },
+        {
+            location: "Tsuraga",
+            description: "Accident exposing 59 workers to large dose of radiation",
+            type: "triangle-exclamation",
+            scale: 2,
+            year: 1981,
+            position: {
+            lat: 35.672778,
+            lng: 136.0775,
+            },
+        },
+        ];
+
+        window.initMap = initMap;
+    </script>
+    <div class='my-legend'>
+        <div class='legend-title'>International Nuclear and Radiological Event Scale</div>
+        <div class='legend-scale'>
+          <ul class='legend-labels'>
+            <li><span style='background:#FFFFFF;'></span>1</li>
+            <li><span style='background:#99CC00;'></span>2</li>
+            <li><span style='background:#FFCC00;'></span>3</li>
+            <li><span style='background:#FF9900;'></span>4</li>
+            <li><span style='background:#FF6600;'></span>5</li>
+            <li><span style='background:#FF0000;'></span>6</li>
+            <li><span style='background:#FF00FF;'></span>7</li>
+          </ul>
+        </div>
+        <div class='legend-source'>Source: <a href="C:\Users\亦辰\Desktop\Year 2\IDVS\Phase II\Nuclear accidents - and how they're ranked.xlsx">List of Nuclear Accidents Identified by IAEA</a></div>
+    </div>
+
+    <div class="legend">
+        <div class="title">Legend</div>
+        <div class="list">
+            <ul class="icons">
+                <li><i class="fa-solid fa-triangle-exclamation"></i>Accident</li>
+                <br>
+                <li><i class="fa-solid fa-explosion"></i>Explosion</li>
+                <br>
+                <li><i class="fa-solid fa-user-nurse"></i>Health Hazard</li>
+                <br>
+                <li><i class="fa-solid fa-screwdriver-wrench"></i>Safety Hazard</li>
+                <br>
+                <li><i class="fa-solid fa-faucet-drip"></i>Leaks</li>
+            </ul>
+        </div>
+    </div>
+  </body>
+</html>
